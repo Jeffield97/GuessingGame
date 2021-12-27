@@ -6,22 +6,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.sox.guessinggame.databinding.FragmentGameBinding
 
 
 class GameFragment : Fragment() {
+    lateinit var viewModel: GameViewModel
     private var _binding: FragmentGameBinding? = null
     // This property is only valid between onCreateView and
 // onDestroyView.
     private val binding get() = _binding!!
-    val words= listOf<String>("Android","Kotlin","Fragment","Activity")
 
-    val secretWord= words.random().uppercase()
-    var secretWord_display=""
-    var incorrectGuesses=""
-    var correctGuesses=""
-    var livesleft=3
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,15 +25,15 @@ class GameFragment : Fragment() {
     ): View? {
         _binding = FragmentGameBinding.inflate(inflater, container, false)
         val view = binding.root
-        secretWord_display=deriveSecretWordDisplay()
+        viewModel=ViewModelProvider(this).get(GameViewModel::class.java)
         updateScreen()
         binding.btnGuess.setOnClickListener {
-            makeGuess(binding.etxtGuess.text.toString().uppercase())
+            viewModel.makeGuess(binding.etxtGuess.text.toString().uppercase())
             binding.etxtGuess.text=null
             updateScreen()
-            if(isWon() ||isLost())
+            if(viewModel.isWon() ||viewModel.isLost())
             {
-                val action = GameFragmentDirections.actionGameFragmentToResultFragment(wonLostMessage())
+                val action = GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.wonLostMessage())
                 view.findNavController().navigate(action)
             }
 
@@ -48,55 +44,12 @@ class GameFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     fun updateScreen()
     {
-        binding.word.text = secretWord_display
-        binding.lives.text = "Tienes $livesleft vidas restantes"
-        binding.incorrect.text = "Letras incorrectas $incorrectGuesses"
+        binding.word.text = viewModel.secretWord_display
+        binding.lives.text = "Tienes ${viewModel.livesleft} vidas restantes"
+        binding.incorrect.text = "Letras incorrectas ${viewModel.incorrectGuesses}"
     }
 
-    fun checkLetter(string: String) = when(correctGuesses.contains(string))
-    {
-        true->string
-        false->"_"
 
-    }
-
-    fun makeGuess(guess:String)
-    {
-        if(guess.length==1)
-        {
-            if (secretWord.contains(guess))
-            {
-                correctGuesses+=guess
-                secretWord_display=deriveSecretWordDisplay()
-            }
-            else
-            {
-                incorrectGuesses+="$guess"
-                livesleft--
-            }
-        }
-    }
-
-    fun deriveSecretWordDisplay():String
-    {
-        var display=""
-        secretWord.forEach {
-            display+=checkLetter(it.toString())
-        }
-        return  display
-    }
-
-    fun isWon()= secretWord.equals(secretWord_display,true)
-    fun isLost()=livesleft<=0
-
-    fun wonLostMessage():String
-    {
-        var message=""
-        if(isWon()) message="Has ganado"
-        if(isLost()) message="Has perdido"
-
-        return  "$message la palabra era $secretWord"
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
