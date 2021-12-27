@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.sox.guessinggame.databinding.FragmentResultBinding
 
@@ -16,6 +17,8 @@ private const val ARG_PARAM2 = "param2"
 
 class ResultFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    lateinit var viewModelFactory: ResultViewModelFactory
+    lateinit var viewModel: ResultViewModel
     private var _binding: FragmentResultBinding? = null
     private val binding get() = _binding!!
 
@@ -28,7 +31,11 @@ class ResultFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentResultBinding.inflate(inflater, container, false)
         val view = binding.root
-        binding.txtMessage.text=ResultFragmentArgs.fromBundle(requireArguments()).result
+
+        val result=ResultFragmentArgs.fromBundle(requireArguments()).result
+        viewModelFactory= ResultViewModelFactory(result!!)
+        viewModel=ViewModelProvider(this,viewModelFactory).get(ResultViewModel::class.java)
+        binding.txtMessage.text=viewModel.result
         binding.btnNewGame.setOnClickListener {
             binding.root.findNavController().navigate(R.id.action_resultFragment_to_gameFragment)
         }
