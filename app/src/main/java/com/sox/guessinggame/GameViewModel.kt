@@ -6,7 +6,7 @@ import com.sox.guessinggame.databinding.FragmentGameBinding
 
 class GameViewModel :ViewModel(){
 
-    val words= listOf<String>("Android","Kotlin","Fragment","Activity")
+    val words= listOf<String>("Android","Kotlin","Fragment","Activity","View")
 
     val secretWord= words.random().uppercase()
     var secretWord_display=""
