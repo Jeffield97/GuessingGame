@@ -1,21 +1,22 @@
 package com.sox.guessinggame
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sox.guessinggame.databinding.FragmentGameBinding
 
 class GameViewModel :ViewModel(){
 
-    val words= listOf<String>("Android","Kotlin","Fragment","Activity","View")
+    val words= listOf<String>("Computadora","GTA5","Celular","Pasta","Naranja","Zeref","Franklin","Dino","Brown")
 
     val secretWord= words.random().uppercase()
-    var secretWord_display=""
-    var incorrectGuesses=""
+    var secretWord_display=MutableLiveData("")
+    var incorrectGuesses=MutableLiveData("")
     var correctGuesses=""
-    var livesleft=3
+    var livesleft=MutableLiveData(3)
 
     init {
-        secretWord_display= deriveSecretWordDisplay()
+        secretWord_display.value = deriveSecretWordDisplay()
     }
 
 
@@ -24,7 +25,6 @@ class GameViewModel :ViewModel(){
     {
         true->string
         false->"_"
-
     }
 
     fun makeGuess(guess:String)
@@ -34,12 +34,12 @@ class GameViewModel :ViewModel(){
             if (secretWord.contains(guess))
             {
                 correctGuesses+=guess
-                secretWord_display=deriveSecretWordDisplay()
+                secretWord_display.value=deriveSecretWordDisplay()
             }
             else
             {
-                incorrectGuesses+="$guess"
-                livesleft--
+                incorrectGuesses.value+="$guess"
+                livesleft.value = livesleft.value?.minus(1)
             }
         }
     }
@@ -53,8 +53,8 @@ class GameViewModel :ViewModel(){
         return  display
     }
 
-    fun isWon()= secretWord.equals(secretWord_display,true)
-    fun isLost()=livesleft<=0
+    fun isWon()= secretWord.equals(secretWord_display.value,true)
+    fun isLost()= livesleft.value!! <=0
 
     fun wonLostMessage():String
     {
