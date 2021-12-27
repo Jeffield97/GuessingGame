@@ -1,6 +1,7 @@
 package com.sox.guessinggame
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sox.guessinggame.databinding.FragmentGameBinding
@@ -9,14 +10,24 @@ class GameViewModel :ViewModel(){
 
     val words= listOf<String>("Computadora","GTA5","Celular","Pasta","Naranja","Zeref","Franklin","Dino","Brown")
 
-    val secretWord= words.random().uppercase()
-    var secretWord_display=MutableLiveData("")
-    var incorrectGuesses=MutableLiveData("")
-    var correctGuesses=""
-    var livesleft=MutableLiveData(3)
+    private val secretWord= words.random().uppercase()
+    private var _secretWord_display=MutableLiveData("")
+    val secretWord_display:LiveData<String>
+    get()=_secretWord_display
+
+    private var _incorrectGuesses=MutableLiveData("")
+    val incorrectGuesses:LiveData<String>
+    get()=_incorrectGuesses
+
+    private var correctGuesses=""
+    private var _livesleft=MutableLiveData(3)
+    val livesleft:LiveData<Int>
+    get()=_livesleft
+
+
 
     init {
-        secretWord_display.value = deriveSecretWordDisplay()
+        _secretWord_display.value = deriveSecretWordDisplay()
     }
 
 
@@ -34,12 +45,12 @@ class GameViewModel :ViewModel(){
             if (secretWord.contains(guess))
             {
                 correctGuesses+=guess
-                secretWord_display.value=deriveSecretWordDisplay()
+                _secretWord_display.value=deriveSecretWordDisplay()
             }
             else
             {
-                incorrectGuesses.value+="$guess"
-                livesleft.value = livesleft.value?.minus(1)
+                _incorrectGuesses.value+="$guess"
+                _livesleft.value = livesleft.value?.minus(1)
             }
         }
     }
