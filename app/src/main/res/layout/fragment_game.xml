@@ -30,17 +30,20 @@
         android:textSize="36sp"
         android:letterSpacing="0.1"/>
     <EditText
+        android:id="@+id/etxt_guess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Adivina una letra"
+        android:hint="@string/adivina_una_letra"
         android:inputType="text"
         android:textSize="16sp"
-        android:maxLength="1"/>
+        android:maxLength="1"
+        android:autofillHints="" />
     <Button
+        android:id="@+id/btn_guess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Adivinar"/>
+        android:text="@string/adivinar"/>
 
 
 </LinearLayout>
