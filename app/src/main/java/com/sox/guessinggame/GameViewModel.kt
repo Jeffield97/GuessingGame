@@ -32,7 +32,7 @@ class GameViewModel :ViewModel(){
 
 
 
-    fun checkLetter(string: String) = when(correctGuesses.contains(string))
+    private  fun checkLetter(string: String) = when(correctGuesses.contains(string))
     {
         true->string
         false->"_"
@@ -54,8 +54,7 @@ class GameViewModel :ViewModel(){
             }
         }
     }
-
-    fun deriveSecretWordDisplay():String
+    private fun deriveSecretWordDisplay():String
     {
         var display=""
         secretWord.forEach {
