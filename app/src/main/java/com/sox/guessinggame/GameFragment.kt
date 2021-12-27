@@ -44,14 +44,22 @@ class GameFragment : Fragment() {
             viewModel.secretWord_display.observe(viewLifecycleOwner, Observer {
                 binding.word.text = it
             })
+
+            viewModel.gameOver.observe(viewLifecycleOwner, Observer {
+                if (it)
+                {
+                    val action = GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.wonLostMessage())
+                    view.findNavController().navigate(action)
+                }
+            })
         binding.btnGuess.setOnClickListener {
             viewModel.makeGuess(binding.etxtGuess.text.toString().uppercase())
             binding.etxtGuess.text=null
-            if(viewModel.isWon() ||viewModel.isLost())
+            /*if(viewModel.isWon() ||viewModel.isLost())
             {
                 val action = GameFragmentDirections.actionGameFragmentToResultFragment(viewModel.wonLostMessage())
                 view.findNavController().navigate(action)
-            }
+            }*/
 
         }
         return view

@@ -24,6 +24,10 @@ class GameViewModel :ViewModel(){
     val livesleft:LiveData<Int>
     get()=_livesleft
 
+    private var _gameOver= MutableLiveData(false)
+    val gameOver:LiveData<Boolean>
+    get()=_gameOver
+
 
 
     init {
@@ -53,6 +57,8 @@ class GameViewModel :ViewModel(){
                 _livesleft.value = livesleft.value?.minus(1)
             }
         }
+        if (isWon()||isLost()) _gameOver.value=true
+
     }
     private fun deriveSecretWordDisplay():String
     {
